@@ -1,0 +1,15 @@
+if TARGET_PISTACHIO
+
+config SYS_BOARD
+	default "pistachio"
+
+config SYS_VENDOR
+	default "nutsboard"
+
+config SYS_SOC
+	default "mx6"
+
+config SYS_CONFIG_NAME
+	default "pistachio"
+
+endif
