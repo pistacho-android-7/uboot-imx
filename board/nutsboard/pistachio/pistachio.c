@@ -429,9 +429,9 @@ int mx6_rgmii_rework(struct phy_device *phydev)
 {
 	unsigned short val;
 
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0x7);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, 0x805d);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0x4003);
+	phy_write(phydev, 0x4, 0xd, 0x7);
+	phy_write(phydev, 0x4, 0xe, 0x805d);
+	phy_write(phydev, 0x4, 0xd, 0x4003);
 
 	return 0;
 }
