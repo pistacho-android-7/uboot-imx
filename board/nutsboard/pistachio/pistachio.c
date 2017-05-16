@@ -246,10 +246,9 @@ static void setup_iomux_uart(void)
 }
 
 #ifdef CONFIG_FSL_ESDHC
-struct fsl_esdhc_cfg usdhc_cfg[3] = {
-	{USDHC2_BASE_ADDR},
+struct fsl_esdhc_cfg usdhc_cfg[2] = {
 	{USDHC3_BASE_ADDR},
-	{USDHC4_BASE_ADDR},
+	{USDHC1_BASE_ADDR},
 };
 
 int mmc_get_env_devno(void)
@@ -280,9 +279,7 @@ int mmc_map_to_kernel_blk(int dev_no)
 {
 	return dev_no + 1;
 }
-
-#define USDHC2_CD_GPIO	IMX_GPIO_NR(2, 2)
-#define USDHC3_CD_GPIO	IMX_GPIO_NR(2, 0)
+#define USDHC3_CD_GPIO	IMX_GPIO_NR(1, 2)
 
 int board_mmc_getcd(struct mmc *mmc)
 {
@@ -290,14 +287,11 @@ int board_mmc_getcd(struct mmc *mmc)
 	int ret = 0;
 
 	switch (cfg->esdhc_base) {
-	case USDHC2_BASE_ADDR:
-		ret = !gpio_get_value(USDHC2_CD_GPIO);
+	case USDHC1_BASE_ADDR:
+		ret = 1;
 		break;
 	case USDHC3_BASE_ADDR:
 		ret = !gpio_get_value(USDHC3_CD_GPIO);
-		break;
-	case USDHC4_BASE_ADDR:
-		ret = 1; /* eMMC/uSDHC4 is always present */
 		break;
 	}
 
@@ -317,27 +311,20 @@ int board_mmc_init(bd_t *bis)
 	 * mmc1                    SD
 	 */
 
-	imx_iomux_v3_setup_multiple_pads(usdhc1_pads, ARRAY_SIZE(usdhc1_pads));
-	imx_iomux_v3_setup_multiple_pads(usdhc3_pads, ARRAY_SIZE(usdhc3_pads));
-	gpio_direction_input(USDHC3_CD_GPIO);
-
 	for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
 		switch (i) {
 		case 0:
-			usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC_CLK);
-			usdhc_cfg[0].max_bus_width = 8;
-			usdhc_cfg[0].esdhc_base = USDHC1_BASE_ADDR;
-			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
-			usdhc_cfg[1].max_bus_width = 4;
-			usdhc_cfg[1].esdhc_base = USDHC3_BASE_ADDR;
-			break;
-		case 1:
+			imx_iomux_v3_setup_multiple_pads(usdhc3_pads, ARRAY_SIZE(usdhc3_pads));
 			usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
 			usdhc_cfg[0].max_bus_width = 4;
-			usdhc_cfg[0].esdhc_base = USDHC3_BASE_ADDR;
+      usdhc_cfg[0].esdhc_base = USDHC1_BASE_ADDR;
+			gpio_direction_input(USDHC3_CD_GPIO);
+			break;
+		case 1:
+			imx_iomux_v3_setup_multiple_pads(usdhc1_pads, ARRAY_SIZE(usdhc1_pads));
 			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC_CLK);
 			usdhc_cfg[1].max_bus_width = 8;
-			usdhc_cfg[1].esdhc_base = USDHC1_BASE_ADDR;
+      usdhc_cfg[1].esdhc_base = USDHC1_BASE_ADDR;
 			break;
 		default:
 			printf("Warning: you configured more USDHC controllers"
