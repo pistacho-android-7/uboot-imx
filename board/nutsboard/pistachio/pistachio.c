@@ -698,6 +698,18 @@ int power_init_board(void)
 	if (ret < 0)
 		return ret;
 
+	/* Decrease SW3A from 1.5 to 1.35V */
+	pmic_reg_read(pfuze, PFUZE100_SW3AVOL, &reg);
+	reg &= ~LDO_VOL_MASK;
+	reg |= SW1x_1_250V;
+	pmic_reg_write(pfuze, PFUZE100_SW3AVOL, reg);
+
+	/* Decrease SW3B from 1.5 to 1.35V */
+	pmic_reg_read(pfuze, PFUZE100_SW3BVOL, &reg);
+	reg &= ~LDO_VOL_MASK;
+	reg |= SW1x_1_250V;
+	pmic_reg_write(pfuze, PFUZE100_SW3BVOL, reg);
+
 	/* Increase VGEN3 from 2.5 to 2.8V */
 	pmic_reg_read(pfuze, PFUZE100_VGEN3VOL, &reg);
 	reg &= ~LDO_VOL_MASK;
