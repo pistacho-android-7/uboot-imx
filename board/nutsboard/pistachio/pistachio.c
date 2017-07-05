@@ -153,25 +153,6 @@ static iomux_v3_cfg_t const usdhc3_pads[] = {
 	MX6_PAD_GPIO_2__GPIO1_IO02    | MUX_PAD_CTRL(NO_PAD_CTRL), /* CD */
 };
 
-#ifdef CONFIG_MXC_SPI
-static iomux_v3_cfg_t const ecspi1_pads[] = {
-	MX6_PAD_KEY_COL0__ECSPI1_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
-	MX6_PAD_KEY_COL1__ECSPI1_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
-	MX6_PAD_KEY_ROW0__ECSPI1_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
-	MX6_PAD_KEY_ROW1__GPIO4_IO09 | MUX_PAD_CTRL(NO_PAD_CTRL),
-};
-
-static void setup_spi(void)
-{
-	imx_iomux_v3_setup_multiple_pads(ecspi1_pads, ARRAY_SIZE(ecspi1_pads));
-}
-
-int board_spi_cs_gpio(unsigned bus, unsigned cs)
-{
-	return (bus == 0 && cs == 0) ? (IMX_GPIO_NR(4, 9)) : -1;
-}
-#endif
-
 static iomux_v3_cfg_t const rgb_pads[] = {
 	MX6_PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK | MUX_PAD_CTRL(NO_PAD_CTRL),
 	MX6_PAD_DI0_PIN15__IPU1_DI0_PIN15 | MUX_PAD_CTRL(NO_PAD_CTRL),
@@ -203,12 +184,23 @@ static iomux_v3_cfg_t const rgb_pads[] = {
 	MX6_PAD_DISP0_DAT22__IPU1_DISP0_DATA22 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	MX6_PAD_DISP0_DAT23__IPU1_DISP0_DATA23 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	MX6_PAD_ENET_TXD0__GPIO1_IO30    | MUX_PAD_CTRL(NO_PAD_CTRL), /* VGA PWR */
+	MX6_PAD_EIM_A25__GPIO5_IO02 | MUX_PAD_CTRL(NO_PAD_CTRL), /* LCD PWR */
 };
 
-static void enable_rgb(struct display_info_t const *dev)
+/* LVDS Back Light */
+static iomux_v3_cfg_t const bl_pads[] = {
+	MX6_PAD_EIM_D16__GPIO3_IO16 | MUX_PAD_CTRL(NO_PAD_CTRL), /* BL PWR */
+	MX6_PAD_GPIO_9__GPIO1_IO09 | MUX_PAD_CTRL(NO_PAD_CTRL), /* PWM */
+	MX6_PAD_GPIO_7__GPIO1_IO07 | MUX_PAD_CTRL(NO_PAD_CTRL), /* BL RST */
+};
+
+static void enable_rgb(void)
 {
 	imx_iomux_v3_setup_multiple_pads(rgb_pads, ARRAY_SIZE(rgb_pads));
+	imx_iomux_v3_setup_multiple_pads(rgb_pads, ARRAY_SIZE(bl_pads));
 	gpio_direction_output(IMX_GPIO_NR(1, 30), 1);
+	udelay(500);
+	gpio_direction_output(IMX_GPIO_NR(5, 2), 1);
 }
 
 static struct i2c_pads_info i2c_pad_info1 = {
@@ -755,9 +747,13 @@ int board_late_init(void)
 	add_board_boot_modes(board_boot_modes);
 #endif
 
-#ifdef CONFIG_ENV_IS_IN_MMC
-	board_late_mmc_env_init();
-#endif
+	enable_rgb();
+	gpio_direction_output(IMX_GPIO_NR(3, 16), 1);
+	udelay(500);
+	gpio_direction_output(IMX_GPIO_NR(1, 9), 1);
+	udelay(500);
+	gpio_direction_output(IMX_GPIO_NR(1, 7), 0); /* lo active */
+
 	return 0;
 }
 
