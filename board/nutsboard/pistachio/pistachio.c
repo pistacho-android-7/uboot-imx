@@ -936,11 +936,11 @@ void board_init_f(ulong dummy)
 	ccgr_init();
 	gpr_init();
 
-	/* iomux and setup of i2c */
-	board_early_init_f();
-
 	/* setup GP timer */
 	timer_init();
+
+	/* iomux and setup of i2c */
+	board_early_init_f();
 
 	/* UART clocks enabled and gd valid - init serial console */
 	preloader_console_init();
