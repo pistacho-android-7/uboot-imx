@@ -194,6 +194,26 @@ static iomux_v3_cfg_t const bl_pads[] = {
 	MX6_PAD_GPIO_7__GPIO1_IO07 | MUX_PAD_CTRL(NO_PAD_CTRL), /* BL RST */
 };
 
+/* WLAN module */
+static iomux_v3_cfg_t const wlan_pads[] = {
+	MX6_PAD_EIM_CS1__GPIO2_IO24 | MUX_PAD_CTRL(NO_PAD_CTRL), /* WiFi EN */
+	MX6_PAD_EIM_A21__GPIO2_IO17 | MUX_PAD_CTRL(NO_PAD_CTRL), /* BT EN */
+};
+
+
+static void reset_wlan(void)
+{
+	imx_iomux_v3_setup_multiple_pads(rgb_pads, ARRAY_SIZE(wlan_pads));
+
+	gpio_direction_output(IMX_GPIO_NR(2, 24), 0);
+	udelay(500);
+	gpio_direction_output(IMX_GPIO_NR(2, 24), 1);
+
+	gpio_direction_output(IMX_GPIO_NR(2, 17), 0);
+	udelay(500);
+	gpio_direction_output(IMX_GPIO_NR(2, 17), 1);
+}
+
 static void enable_rgb(void)
 {
 	imx_iomux_v3_setup_multiple_pads(rgb_pads, ARRAY_SIZE(rgb_pads));
@@ -859,6 +879,7 @@ int board_late_init(void)
 	add_board_boot_modes(board_boot_modes);
 #endif
 
+	reset_wlan();
 	enable_rgb();
 	gpio_direction_output(IMX_GPIO_NR(3, 16), 1);
 	udelay(500);
