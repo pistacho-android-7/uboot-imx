@@ -43,6 +43,8 @@
 #define CONFIG_SYS_MMC_ENV_DEV		0	/* SDHC3 */
 #define CONFIG_SYS_MMC_ENV_PART                1       /* user partition */
 
+#undef CONFIG_LDO_BYPASS_CHECK
+
 #ifdef CONFIG_SYS_USE_SPINOR
 #define CONFIG_SF_DEFAULT_CS   0
 #endif
