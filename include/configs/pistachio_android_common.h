@@ -132,6 +132,36 @@
 				"echo WARN: Cannot load kernel from boot media; " \
 			"fi; " \
 		"fi;\0" \
+	"tn_recovery_init=" \
+		"if test ${bootmedia} = mmc; then " \
+			"mmc dev ${mmcdev}; mmc rescan; " \
+		"fi;" \
+		"if run loadbootenv; then " \
+			"echo Loaded environment from ${bootenv};" \
+			"run importbootenv;" \
+		"fi;" \
+		"if test -n $uenvcmd; then " \
+			"echo Running uenvcmd ...;" \
+			"run uenvcmd;" \
+		"fi;" \
+		"if run loadbootscript; then " \
+			"run bootscript; " \
+		"fi;" \
+		"if run loadramdisk; then " \
+			"setenv rootdevice ${ramdisk_dev}; " \
+			"setenv mmcboot \'run mmcargs; bootz ${loadaddr} ${initrdaddr} ${fdt_addr} recovery\'; " \
+		"fi;" \
+		"if run loadimage; then " \
+			"run loadfdt; " \
+			"run mmcboot; " \
+		"else " \
+			"if run loadimage; then " \
+				"run mmcboot; " \
+			"else " \
+				"echo WARN: Cannot load kernel from boot media; " \
+			"fi; " \
+		"fi;\0" \
+		"recoverycmd=setenv mmcpart \'2\'; run tn_recovery_init\0" \
 
 #define CONFIG_USB_FASTBOOT_BUF_ADDR   CONFIG_SYS_LOAD_ADDR
 #ifdef CONFIG_FASTBOOT_STORAGE_NAND
