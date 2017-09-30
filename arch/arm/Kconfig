@@ -490,6 +490,10 @@ config TARGET_PISTACHIO
 	bool "Support pistachio"
 	select CPU_V7
 
+config TARGET_PISTACHIO_LITE
+	bool "Support pistachio-lite"
+	select CPU_V7
+
 config TARGET_WARP
 	bool "Support WaRP"
 	select CPU_V7
@@ -946,6 +950,7 @@ source "board/udoo/Kconfig"
 source "board/vpac270/Kconfig"
 source "board/wandboard/Kconfig"
 source "board/nutsboard/pistachio/Kconfig"
+source "board/nutsboard/pistachio-lite/Kconfig"
 source "board/warp/Kconfig"
 source "board/woodburn/Kconfig"
 source "board/work-microwave/work_92105/Kconfig"
