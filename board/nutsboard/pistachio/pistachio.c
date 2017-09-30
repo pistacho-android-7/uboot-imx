@@ -907,9 +907,37 @@ void board_fastboot_setup(void)
 
 #ifdef CONFIG_ANDROID_RECOVERY
 
+iomux_v3_cfg_t const recovery_key_pads[] = {
+	MX6_PAD_GPIO_16__GPIO7_IO11 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_EIM_A19__GPIO2_IO19 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_EIM_A24__GPIO5_IO04 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_GPIO_17__GPIO7_IO12 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+#define GPIO_OUT1_KEY IMX_GPIO_NR(7, 11)
+#define GPIO_OUT2_KEY IMX_GPIO_NR(2, 19)
+#define GPIO_OUT3_KEY IMX_GPIO_NR(5, 4)
+#define GPIO_OUT4_KEY IMX_GPIO_NR(7, 12)
+
 int check_recovery_cmd_file(void)
 {
-  return recovery_check_and_clean_command();
+	int button_pressed = 0;
+
+	imx_iomux_v3_setup_multiple_pads(recovery_key_pads,
+		ARRAY_SIZE(recovery_key_pads));
+
+	gpio_direction_input(GPIO_OUT1_KEY);
+	gpio_direction_input(GPIO_OUT2_KEY);
+	gpio_direction_input(GPIO_OUT3_KEY);
+	gpio_direction_input(GPIO_OUT4_KEY);
+
+	if (gpio_get_value(GPIO_OUT1_KEY) == 0 && gpio_get_value(GPIO_OUT2_KEY) == 1 &&
+			gpio_get_value(GPIO_OUT3_KEY) == 0 && gpio_get_value(GPIO_OUT4_KEY) == 1) {
+		button_pressed = 1;
+		printf("Recovery key pressed\n");
+	}
+
+	return recovery_check_and_clean_command() || button_pressed;
 }
 
 void board_recovery_setup(void)
