@@ -199,6 +199,11 @@ static iomux_v3_cfg_t const wlan_pads[] = {
 	MX6_PAD_EIM_A21__GPIO2_IO17 | MUX_PAD_CTRL(NO_PAD_CTRL), /* BT EN */
 };
 
+/* AR1021 TP Select */
+static iomux_v3_cfg_t const tp_pads[] = {
+	MX6_PAD_EIM_LBA__GPIO2_IO27 | MUX_PAD_CTRL(NO_PAD_CTRL), /* TP PWR */
+	MX6_PAD_EIM_A18__GPIO2_IO20 | MUX_PAD_CTRL(NO_PAD_CTRL), /* TP SELECT */
+};
 
 static void reset_wlan(void)
 {
@@ -212,6 +217,17 @@ static void reset_wlan(void)
 	udelay(500);
 	gpio_direction_output(IMX_GPIO_NR(2, 17), 1);
 }
+
+static void touch_init(void)
+{
+	imx_iomux_v3_setup_multiple_pads(tp_pads, ARRAY_SIZE(tp_pads));
+	gpio_direction_output(IMX_GPIO_NR(2, 20), 0); /* TP SELECT to lo */
+	udelay(500);
+	gpio_direction_output(IMX_GPIO_NR(2, 27), 0); /* TP PWR reset */
+	udelay(500);
+	gpio_direction_output(IMX_GPIO_NR(2, 27), 1);
+}
+
 
 static void enable_rgb(void)
 {
@@ -880,6 +896,7 @@ int board_late_init(void)
 
 	reset_wlan();
 	enable_rgb();
+	touch_init();
 	gpio_direction_output(IMX_GPIO_NR(3, 16), 1);
 	udelay(500);
 	gpio_direction_output(IMX_GPIO_NR(1, 9), 1);
