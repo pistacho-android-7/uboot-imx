@@ -1,0 +1,15 @@
+if TARGET_COCONUT
+
+config SYS_BOARD
+	default "coconut"
+
+config SYS_VENDOR
+	default "nutsboard"
+
+config SYS_SOC
+	default "mx6"
+
+config SYS_CONFIG_NAME
+	default "coconut"
+
+endif
