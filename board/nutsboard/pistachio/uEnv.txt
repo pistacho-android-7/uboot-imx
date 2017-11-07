@@ -1,4 +1,4 @@
 displayinfo=video=mxcfb0:dev=hdmi,1280x720M@60,if=RGB24 fbmem=28M
-mmcargs=setenv bootargs console=${console},${baudrate} cma=256M root=${mmcroot} ${displayinfo}
+mmcargs=setenv bootargs console=${console},${baudrate} root=/dev/mmcblk2p2 rootwait rw ${displayinfo} ldo_active=on quiet
 bootcmd_mmc=run loadimage;run mmcboot;
 uenvcmd=run bootcmd_mmc
