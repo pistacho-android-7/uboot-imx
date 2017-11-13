@@ -1,4 +1,4 @@
-CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/nutsboard/pistachio-lite/mx6q_4x_mt41k256_2g.cfg,MX6Q"
+CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/nutsboard/pistachio-lite/mx6q_4x_mt41k128_1g.cfg,MX6Q"
 CONFIG_ARM=y
 CONFIG_TARGET_PISTACHIO_LITE=y
 CONFIG_SYS_MALLOC_F=y
