@@ -121,7 +121,7 @@
 #define CONFIG_SYS_MALLOC_F_LEN		(32 * 1024)
 
 #define CONFIG_BOOTARGS							\
-	"console=ttyLP0,115200 consoleblank=0 ignore_loglevel "
+	"console=ttyLP0,115200 root=/dev/mmcblk0p2 rootwait consoleblank=0 ignore_loglevel "
 
 #define CONFIG_BOOTCOMMAND						\
 	"run mmcboot"
