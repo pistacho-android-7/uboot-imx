@@ -195,6 +195,7 @@ u32 get_lpuart_clk(void)
 #ifdef CONFIG_FSL_ESDHC
 static struct fsl_esdhc_cfg usdhc_cfg[] = {
 	{0x402c0000, 0, 4},
+	{0x402c4000, 0, 8},
 };
 
 int board_mmc_getcd(struct mmc *mmc)
@@ -209,9 +210,9 @@ int board_mmc_init(bd_t *bis)
 
 void init_clk_usdhc(u32 index)
 {
-	*(volatile unsigned long*)0x400FC080 |= (3 << 2);
-	*(volatile unsigned long*)0x400FC024 &= ~(7 << 11);
-	*(volatile unsigned long*)0x400FC024 |= (7 << 11);
+	*(volatile unsigned long*)0x400FC080 |= (15 << 2);
+	*(volatile unsigned long*)0x400FC024 &= ~(255 << 11);
+	*(volatile unsigned long*)0x400FC024 |= (255 << 11);
 }
 #endif
 
