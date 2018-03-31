@@ -153,8 +153,6 @@ static void setup_lcd(void)
 		{ 0x0184, 0x0374, 0x0, 0x1b0b0 }, /* PAD_B1_02_LCD_DATA14 */
 		{ 0x0188, 0x0378, 0x0, 0x1b0b0 }, /* PAD_B1_03_LCD_DATA15 */
 
-		{ 0x01b8, 0x03a8, 0x5, 0x0b069 }, /* PAD_B1_15_GPIO2_IO31 */
-		{ 0x00c4, 0x02b4, 0x5, 0x0b069 }, /* PAD_AD_B0_02_GPIO1_IO02 */
 	};
 
 	int i;
