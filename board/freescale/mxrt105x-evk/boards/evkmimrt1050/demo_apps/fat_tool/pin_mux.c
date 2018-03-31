@@ -185,6 +185,9 @@ void BOARD_InitPins(void) {                                /*!< Function assigne
                                                            IOMUXC_SW_PAD_CTL_PAD_SPEED(1) |
                                                            IOMUXC_SW_PAD_CTL_PAD_PUS(1) | IOMUXC_SW_PAD_CTL_PAD_DSE(4));
 
+    /* USB Switch for WiFi and USB Host*/
+    IOMUXC_SetPinMux(IOMUXC_GPIO_B1_15_GPIO2_IO31, 0);
+
 #endif
 }
 

@@ -96,6 +96,22 @@ int board_eth_init(bd_t *bis)
 	return 0;
 }
 
+static int wifi_init(void)
+{
+
+	gpio_pin_config_t gpio_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
+
+	GPIO_PinInit(GPIO2, 31, &gpio_config);
+
+	GPIO_WritePinOutput(GPIO2, 31, 1);
+	udelay(100);
+	GPIO_WritePinOutput(GPIO2, 31, 0);
+
+	return 0;
+}
+
+
+
 void imx_get_mac_from_fuse(int dev_id, unsigned char *mac)
 {
 	memset(mac, 0, 6);
@@ -184,6 +200,7 @@ int board_init(void)
 int board_late_init(void)
 {
 	board_eth_init(NULL);
+	wifi_init();
 	return 0;
 }
 
